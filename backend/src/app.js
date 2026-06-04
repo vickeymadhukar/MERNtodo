@@ -16,7 +16,7 @@ app.use(morgan(process.env.NODE_ENV === "development" ? "dev" : "combined"));
 // ── CORS ────────────────────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: "*",
+    origin: "http://52.66.192.74",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
