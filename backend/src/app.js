@@ -32,19 +32,6 @@ app.get("/api/v1/health", (_req, res) => {
 });
 
 
-app.get("/api/v1/test", (req, res) => {
-  const info = {
-    message: "✅ Backend is reachable!",
-    time: new Date().toISOString(),
-    env: process.env.NODE_ENV || "not set",
-    port: process.env.PORT || 4000,
-    requestOrigin: req.headers.origin || "no origin header",
-    requestHost: req.headers.host,
-  };
-  console.log("🧪 TEST ROUTE HIT:", info);
-  res.status(200).json(info);
-});
-
 // ── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/v1/todos", todoRoutes);
 
