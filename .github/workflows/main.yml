@@ -17,54 +17,56 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: |
-            backend/package-lock.json
-            frontend/package-lock.json
 
-      - name: Install backend dependencies
+      # =========================
+      # Backend
+      # =========================
+
+      - name: Install Backend Dependencies
         working-directory: ./backend
         run: npm install
 
-      - name: Create backend .env
+      - name: Create Backend .env
         working-directory: ./backend
         run: |
-          touch .env
-          echo "PORT=${{ secrets.PORT }}" > .env
-          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-          echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> .env
-          echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}" >> .env
+          echo "${{ secrets.BACKEND_ENV }}" > .env
 
-      - name: Start backend with PM2
+      - name: Start Backend with PM2
         working-directory: ./backend
         run: |
-          pm2 restart mern-todo-api || pm2 start server.js --name mern-todo-api
+          pm2 restart mern-todo-api --update-env || pm2 start server.js --name mern-todo-api
+          pm2 save
 
-      - name: Clean frontend cache
-        working-directory: ./frontend
-        run: |
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
+      # =========================
+      # Frontend
+      # =========================
 
-      - name: Install frontend dependencies
+      - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: npm install
 
-      - name: Create frontend .env
+      - name: Create Frontend .env
         working-directory: ./frontend
         run: |
-          touch .env
-          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env
+          echo "${{ secrets.FRONTEND_ENV }}" > .env
 
-      - name: Build frontend
+      - name: Build Frontend
         working-directory: ./frontend
         run: npm run build
 
-      - name: Deploy frontend to Nginx
+      # =========================
+      # Deploy to Nginx
+      # =========================
+
+      - name: Deploy Frontend to Nginx
         run: |
           sudo rm -rf /var/www/html/*
-          sudo cp -r ./frontend/dist/* /var/www/html/
+          sudo cp -r frontend/dist/* /var/www/html/
+
+      - name: Reload Nginx
+        run: |
+          sudo systemctl reload nginx
