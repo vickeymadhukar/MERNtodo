@@ -31,7 +31,7 @@ app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({ status: "ok", message: "API is healthy 🟢" });
 });
 
-// ── Test Route (debug) ───────────────────────────────────────────────────────
+
 app.get("/api/v1/test", (req, res) => {
   const info = {
     message: "✅ Backend is reachable!",
