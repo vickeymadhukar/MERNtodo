@@ -38,7 +38,7 @@ jobs:
       - name: Start Backend with PM2
         working-directory: ./backend
         run: |
-          pm2 restart mern-todo-api --update-env || pm2 start server.js --name mern-todo-api
+          /home/ubuntu/.nvm/versions/node/v24.16.0/bin/pm2 restart mern-todo-api --update-env || /home/ubuntu/.nvm/versions/node/v24.16.0/bin/pm2 start server.js --name mern-todo-api
           pm2 save
 
       # =========================
